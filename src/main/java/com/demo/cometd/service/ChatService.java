@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service("chat")
 public class ChatService {
@@ -52,7 +53,7 @@ public class ChatService {
     private ServerSession _session;
 
 
-    @Inject
+    @Autowired
     private DBRepository repository;
 
 
