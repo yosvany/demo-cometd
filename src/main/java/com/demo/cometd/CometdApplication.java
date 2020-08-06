@@ -2,6 +2,9 @@ package com.demo.cometd;
 
 import com.demo.cometd.service.ChatService;
 import org.cometd.annotation.server.AnnotationCometDServlet;
+import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.server.BayeuxServerImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
@@ -16,21 +19,14 @@ public class CometdApplication implements ServletContextInitializer {
 			SpringApplication.run(CometdApplication.class, args);
 	}
 
+	@Autowired
+	BayeuxServerImpl bayeux;
+
 	@Override
 	public void onStartup(ServletContext servletContext) {
 
-		ServletRegistration.Dynamic cometdServlet = servletContext.addServlet("cometd", AnnotationCometDServlet.class);
-		String mapping = "/cometd/*";
-		cometdServlet.addMapping(mapping);
-		cometdServlet.setAsyncSupported(true);
-		cometdServlet.setLoadOnStartup(1);
-
-		cometdServlet.setInitParameter("services",
-
-						ChatService.class.getName()
-		);
-		cometdServlet.setInitParameter("ws.cometdURLMapping", mapping);
-
+		servletContext.setAttribute(BayeuxServer.ATTRIBUTE, this.bayeux);
+		this.bayeux.setOption(ServletContext.class.getName(), servletContext);
 
 	}
 }

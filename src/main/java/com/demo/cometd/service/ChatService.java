@@ -15,6 +15,7 @@
  */
 package com.demo.cometd.service;
 
+import com.demo.cometd.MyDBService;
 import com.demo.cometd.dao.TestDAO;
 import com.demo.cometd.reposiroty.DBRepository;
 import org.cometd.annotation.Listener;
@@ -53,8 +54,8 @@ public class ChatService {
     private ServerSession _session;
 
 
-    @Autowired
-    private DBRepository repository;
+    @Inject
+    private MyDBService myDBService;
 
 
 
@@ -184,7 +185,7 @@ public class ChatService {
 
         dao.setMessage("test");
         logger.debug("saving ....");
-        this.repository.save(dao);
+        this.myDBService.save(dao);
         logger.debug("id = {}", dao.getId());
 
     }
