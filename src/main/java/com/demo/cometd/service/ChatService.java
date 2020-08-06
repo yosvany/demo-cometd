@@ -30,6 +30,7 @@ import org.cometd.server.filter.JSONDataFilter;
 import org.cometd.server.filter.NoMarkupFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class ChatService {
     private ServerSession _session;
 
 
-    @Inject
+    @Autowired
     private DBRepository repository;
 
 
@@ -179,17 +180,12 @@ public class ChatService {
     @Listener("/chat/demo")
     public void handleChatDemo(ServerSession client, ServerMessage message) {
         logger.info("Listener service/demo .. " );
-        save();
-
-    }
-
-
-    public void save(){
         TestDAO dao = new TestDAO();
         dao.setMessage("test");
         logger.debug("saving ....");
         this.repository.save(dao);
         logger.debug("id = {}", dao.getId());
+
     }
 
 
