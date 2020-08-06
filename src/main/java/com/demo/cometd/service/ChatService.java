@@ -181,12 +181,14 @@ public class ChatService {
     public void handleChatDemo(ServerSession client, ServerMessage message) {
         logger.info("Listener service/demo .. " );
         TestDAO dao = new TestDAO();
+
         dao.setMessage("test");
         logger.debug("saving ....");
         this.repository.save(dao);
         logger.debug("id = {}", dao.getId());
 
     }
+
 
 
     static class BadWordFilter extends JSONDataFilter {
