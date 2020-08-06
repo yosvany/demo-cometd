@@ -180,18 +180,14 @@ public class ChatService {
     @Listener("/chat/demo")
     public void handleChatDemo(ServerSession client, ServerMessage message) {
         logger.info("Listener service/demo .. " );
-        save();
-
-    }
-
-
-    public void save(){
-        TestDAO dao = new TestDAO();
+         TestDAO dao = new TestDAO();
         dao.setMessage("test");
         logger.debug("saving ....");
         this.repository.save(dao);
         logger.debug("id = {}", dao.getId());
+
     }
+
 
 
     static class BadWordFilter extends JSONDataFilter {
