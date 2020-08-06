@@ -1,0 +1,54 @@
+require({
+        baseUrl: "../../js/jquery",
+        paths: {
+            jquery: "https://code.jquery.com/jquery-3.4.1",
+            cometd: "../cometd"
+        }
+    },
+    ["jquery", "jquery.cometd", "jquery.cometd-timestamp", "jquery.cometd-reload"/*, "jquery.cometd-ack"*/],
+    function($, cometd) {
+        $(function() {
+            function echoRpc(text) {
+                console.debug("Echoing", text);
+
+                cometd.remoteCall("echo", {msg: text}, function(reply) {
+                    var responses = $("#responses");
+                    responses.html(responses.html() +
+                        (reply.timestamp || "") + " Echoed by server: " + reply.data.msg + "<br/>");
+                });
+            }
+
+            $(window).on("beforeunload", cometd.reload);
+
+            var phrase = $("#phrase");
+            phrase.attr("autocomplete", "OFF");
+            phrase.on("keyup", function(e) {
+                if (e.key === 'Enter') {
+                    echoRpc(phrase.val());
+                    phrase.val("");
+                    return false;
+                }
+                return true;
+            });
+            var sendB = $("#sendB");
+            sendB.on("click", function() {
+                echoRpc(phrase.val());
+                phrase.val("");
+                return false;
+            });
+
+            console.log("location.href: ",location.href);
+            cometd.configure({
+                url: location.href.replace(/\/echo\/.*$/, "") + "/cometd",
+                logLevel: "debug"
+            });
+
+  console.log("cometd: ", cometd);
+            cometd.addListener("/meta/handshake", function(reply) {
+                if (reply.successful) {
+                    echoRpc("Type something in the textbox above");
+                }
+            });
+            cometd.handshake();
+        });
+    });
