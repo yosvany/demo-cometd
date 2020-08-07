@@ -13,11 +13,18 @@ Or
  mvn spring-boot:run
 ```
  
+If you prefer Docker:
+
+````shell script
+mvn clean package && docker build --rm -t demo-cometd . && docker run -it -p8080:8080 demo-cometd
+````  
 Once the server start, you can open http://localhost:8080 and join the chat with one user, then repeat in another tab with a different user
 
-Eevery message will be saved to the in memory h2 database and the user will be notified with the ID.
+Every message will be saved to the in memory H2 database and the user will be notified with the ID.
 
 Use case very simple and not functional, but the idea was to inject an spring annotated JPA repository within the cometD annotated @service 
+
+Hope it help.
 
 ## Versions
 
