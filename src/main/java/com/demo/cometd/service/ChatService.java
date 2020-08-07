@@ -15,9 +15,7 @@
  */
 package com.demo.cometd.service;
 
-import com.demo.cometd.MyDBService;
 import com.demo.cometd.dao.TestDAO;
-import com.demo.cometd.reposiroty.DBRepository;
 import org.cometd.annotation.Listener;
 import org.cometd.annotation.Service;
 import org.cometd.annotation.Session;
@@ -31,7 +29,6 @@ import org.cometd.server.filter.JSONDataFilter;
 import org.cometd.server.filter.NoMarkupFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -180,13 +177,30 @@ public class ChatService {
 
     @Listener("/chat/demo")
     public void handleChatDemo(ServerSession client, ServerMessage message) {
-        logger.info("Listener service/demo .. " );
-        TestDAO dao = new TestDAO();
+        logger.info("Saving data ... client: {}, message: {}", client, message );
 
-        dao.setMessage("test");
-        logger.debug("saving ....");
-        this.myDBService.save(dao);
-        logger.debug("id = {}", dao.getId());
+        new Thread(()->{
+            Map<String, Object> data = message.getDataAsMap();
+            Map<String, Object> chat = new HashMap<>();
+
+            String text = (String) data.get("chat");
+            TestDAO dao = new TestDAO();
+            dao.setMessage(text);
+            this.myDBService.save(dao);
+
+            chat.put("chat",  "saved with id=" + dao.getId());
+            chat.put("user", "SYSTEM");
+             chat.put("scope", "private");
+            ServerMessage.Mutable forward = this._bayeux.newMessage();
+            forward.setChannel("/chat/demo");
+            forward.setId(message.getId());
+            forward.setData(chat);
+            logger.info("Delivering notification to client with updated data.... ");
+            client.deliver(this._session, forward, Promise.noop());
+
+        }).start();
+
+
 
     }
 

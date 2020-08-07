@@ -9,10 +9,10 @@
 		<version>2.3.2.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.plusnetsolutions</groupId>
-	<artifactId>big-cometd</artifactId>
+	<groupId>com.exaple</groupId>
+	<artifactId>cometd-example</artifactId>
 	<version>1.0.0</version>
-	<name>big-cometd</name>
+	<name>cometd-example</name>
 	<description>CometD server</description>
 
 	<properties>
